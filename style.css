@@ -6,7 +6,25 @@ body {
 	background: #f4f6fb;
 	color: #111;
 }
-
+#header{
+    width:100%;
+    display: flex;
+    justify-content: center;
+	align-items: center;
+}
+.logo_container{
+    display: flex;
+    flex-direction: row;
+    font-weight: 700;
+    font-size: 1.6rem;
+    justify-content: center;
+	align-items: center;
+    padding: 25px 0px 0px;
+    text-decoration:none;
+    user-select: none;
+    color:#111;
+    max-width:500px;
+}
 .container {
 	max-width: 700px;
 	margin: 30px auto;
@@ -105,7 +123,24 @@ h1 { margin: 0 0 8px; font-size: 26px; }
 	vertical-align: middle;
 	margin-right: 6px;
 }
-
+#footer{
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+}
+.footer_links{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.footer_links a{
+    text-decoration:none;
+    color: #111;
+}
 @keyframes spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
