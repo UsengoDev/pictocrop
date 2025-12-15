@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Image Dimension & DPI Fixer</title>
+	<meta name="description" content="Resize and crop images to specific dimensions and DPI online.">
+	<link rel="stylesheet" href="style.css">
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h1>Image Dimension & DPI Fixer</h1>
+		<p class="subtitle">Crop and resize your image using presets or manual selection. One image at a time.</p>
+
+		<div id="dropzone">
+			<p>Drag & drop an image here</p>
+			<span>or</span>
+			<button id="selectBtn">Select Image</button>
+			<input type="file" id="fileInput" accept="image/*" hidden>
+			<div id="overlay"></div>
+			<div id="cropBox"></div>
+		</div>
+
+		<div class="controls">
+			<label for="presetSelect">Presets:</label>
+<select id="presetSelect">
+	<option value="Custom">Custom</option>
+
+	<optgroup label="Physical Photos">
+		<option value="Passport">Passport (2x2 inches)</option>
+		<option value="Visa">Visa Photo (35x45 mm)</option>
+	</optgroup>
+
+	<optgroup label="Facebook">
+		<option value="Facebook Profile">Profile Picture</option>
+		<option value="Facebook Cover">Cover Photo</option>
+	</optgroup>
+
+	<optgroup label="Instagram">
+		<option value="Instagram Profile">Profile Picture</option>
+		<option value="Instagram Post Square">Post (Square)</option>
+		<option value="Instagram Post Portrait">Post (Portrait)</option>
+		<option value="Instagram Story">Story / Reel</option>
+	</optgroup>
+
+	<optgroup label="X / Twitter">
+		<option value="X Profile">Profile Picture</option>
+		<option value="X Header">Header / Cover</option>
+	</optgroup>
+
+	<optgroup label="LinkedIn">
+		<option value="LinkedIn Profile">Profile Picture</option>
+		<option value="LinkedIn Cover">Cover Photo</option>
+	</optgroup>
+
+	<optgroup label="TikTok">
+		<option value="TikTok Profile">Profile Picture</option>
+		<option value="TikTok Story/Reel">Story / Reel</option>
+	</optgroup>
+
+	<optgroup label="Pinterest">
+		<option value="Pinterest Profile">Profile Picture</option>
+		<option value="Pinterest Pin">Pin</option>
+	</optgroup>
+
+	<optgroup label="YouTube">
+		<option value="YouTube Profile">Profile Picture</option>
+		<option value="YouTube Banner">Banner</option>
+		<option value="YouTube Thumbnail">Thumbnail</option>
+	</optgroup>
+</select>
+
+			<button id="processBtn">Download Cropped</button>
+		</div>
+
+		<div id="preview"></div>
+		<div id="downloadArea"></div>
+	</div>
+
+	<script src="script.js"></script>
+</body>
+</html>
