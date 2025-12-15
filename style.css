@@ -147,7 +147,7 @@ h1 { margin: 0 0 8px; font-size: 26px; }
 }
 .our_other_tools{
     display:flex;
-    flex-direction:row;
+    flex-direction:column;
     justify-content: center;
     align-items:center;
     font-weight: 700;
