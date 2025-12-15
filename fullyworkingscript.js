@@ -28,6 +28,11 @@ $(function () {
 	}
 	const screenDPI = getScreenDPI();
 
+	/* --- Detect mobile --- */
+	function isMobile() {
+		return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+	}
+
 	/* --- File selection --- */
 	$selectBtn.on('click', () => $fileInput.trigger('click'));
 	$fileInput.on('change', function () { handleFile(this.files[0]); });
@@ -129,8 +134,45 @@ $(function () {
 		setPreset();
 	}
 
+	/* --- Mobile preset sizing --- */
+	function setPresetMobile() {
+		const presetVal = $presetSelect.val();
+		const preset = presets[presetVal];
+		if (!cropBox || !image || presetVal === 'Custom') return;
+
+		const imgRatio = image.naturalWidth / image.naturalHeight;
+		let displayWidth = $preview.width();
+		let displayHeight = displayWidth / imgRatio;
+		if (displayHeight > $preview.height()) {
+			displayHeight = $preview.height();
+			displayWidth = displayHeight * imgRatio;
+		}
+		image.style.width = displayWidth + 'px';
+		image.style.height = displayHeight + 'px';
+		image.style.left = ($preview.width() - displayWidth) / 2 + 'px';
+		image.style.top = ($preview.height() - displayHeight) / 2 + 'px';
+
+		previewScale = displayWidth / image.naturalWidth;
+
+		const presetWidthPx = preset.widthIn * screenDPI;
+		const presetHeightPx = preset.heightIn * screenDPI;
+		const scale = Math.min($preview.width() / presetWidthPx, $preview.height() / presetHeightPx);
+
+		cropBox.style.width = presetWidthPx * scale + 'px';
+		cropBox.style.height = presetHeightPx * scale + 'px';
+		cropBox.style.left = ($preview.width() - presetWidthPx * scale) / 2 + 'px';
+		cropBox.style.top = ($preview.height() - presetHeightPx * scale) / 2 + 'px';
+
+		updateOverlay();
+	}
+
 	/* --- Set preset --- */
 	function setPreset() {
+		if (isMobile() && $presetSelect.val() !== 'Custom') {
+			setPresetMobile();
+			return;
+		}
+
 		const presetVal = $presetSelect.val();
 		const preset = presets[presetVal];
 

@@ -62,7 +62,7 @@ h1 { margin: 0 0 8px; font-size: 26px; }
 }
 
 #presetSelect { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; }
-#processBtn { padding: 8px 14px; border-radius: 8px; border: none; background: #4a7cff; color: #fff; cursor: pointer; }
+#processBtn { padding: 8px 14px; border-radius: 8px; border: none; background: #914aff; color: #fff; cursor: pointer; }
 
 #preview {
 	position: relative;
