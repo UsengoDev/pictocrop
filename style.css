@@ -156,6 +156,7 @@ h1 { margin: 0 0 8px; font-size: 26px; }
 .our_other_tools a{
     text-decoration:none;
     color:black;
+    padding: 24px;
 }
 .other_tools_title{
     font-size: 28px;
