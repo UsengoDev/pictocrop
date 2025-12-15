@@ -157,6 +157,10 @@ h1 { margin: 0 0 8px; font-size: 26px; }
     text-decoration:none;
     color:black;
 }
+.other_tools_title{
+    font-size: 28px;
+    line-height: 64px;
+}
 .online_tool_container{
     text-align:center;
 }
@@ -166,6 +170,9 @@ h1 { margin: 0 0 8px; font-size: 26px; }
     justify-content: center;
     align-items: center;
     gap: 32px;
+    padding: 24px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 .tool_description{
     font-weight:normal;
