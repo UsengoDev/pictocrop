@@ -13,8 +13,6 @@ $(function () {
 
 	let overlayTop, overlayLeft, overlayRight, overlayBottom;
 	let previewScale = 1;
-	const isMobile = window.innerWidth < 768; // simple mobile check
-	const deviceDPR = window.devicePixelRatio || 1;
 
 	/* --- Detect monitor DPI --- */
 	function getScreenDPI() {
@@ -28,7 +26,12 @@ $(function () {
 		document.body.removeChild(div);
 		return dpi;
 	}
-	const screenDPI = getScreenDPI() * deviceDPR;
+	const screenDPI = getScreenDPI();
+
+	/* --- Detect mobile --- */
+	function isMobile() {
+		return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+	}
 
 	/* --- File selection --- */
 	$selectBtn.on('click', () => $fileInput.trigger('click'));
@@ -70,26 +73,41 @@ $(function () {
 
 	/* --- Presets --- */
 	const presets = {
-		'Passport': { widthIn: 2, heightIn: 2 },
-		'Visa': { widthIn: 35 / 25.4, heightIn: 45 / 25.4 },
-		'Facebook Profile': { widthIn: 320 / 96, heightIn: 320 / 96 },
-		'Facebook Cover': { widthIn: 820 / 96, heightIn: 312 / 96 },
-		'Instagram Profile': { widthIn: 320 / 96, heightIn: 320 / 96 },
-		'Instagram Post Square': { widthIn: 1080 / 96, heightIn: 1080 / 96 },
-		'Instagram Post Portrait': { widthIn: 1080 / 96, heightIn: 1350 / 96 },
-		'Instagram Story': { widthIn: 1080 / 96, heightIn: 1920 / 96 },
-		'X Profile': { widthIn: 400 / 96, heightIn: 400 / 96 },
-		'X Header': { widthIn: 1500 / 96, heightIn: 500 / 96 },
-		'LinkedIn Profile': { widthIn: 400 / 96, heightIn: 400 / 96 },
-		'LinkedIn Cover': { widthIn: 1584 / 96, heightIn: 396 / 96 },
-		'TikTok Profile': { widthIn: 200 / 96, heightIn: 200 / 96 },
-		'TikTok Story/Reel': { widthIn: 1080 / 96, heightIn: 1920 / 96 },
-		'Pinterest Profile': { widthIn: 165 / 96, heightIn: 165 / 96 },
-		'Pinterest Pin': { widthIn: 1000 / 96, heightIn: 1500 / 96 },
-		'YouTube Profile': { widthIn: 800 / 96, heightIn: 800 / 96 },
-		'YouTube Banner': { widthIn: 2560 / 96, heightIn: 1440 / 96 },
-		'YouTube Thumbnail': { widthIn: 1280 / 96, heightIn: 720 / 96 }
-	};
+	/* Physical Photos */
+	'Passport': { widthIn: 2, heightIn: 2 },
+	'Visa': { widthIn: 35 / 25.4, heightIn: 45 / 25.4 },
+
+	/* Facebook */
+	'Facebook Profile': { widthIn: 320 / 96, heightIn: 320 / 96 },
+	'Facebook Cover': { widthIn: 820 / 96, heightIn: 312 / 96 },
+
+	/* Instagram */
+	'Instagram Profile': { widthIn: 320 / 96, heightIn: 320 / 96 },
+	'Instagram Post Square': { widthIn: 1080 / 96, heightIn: 1080 / 96 },
+	'Instagram Post Portrait': { widthIn: 1080 / 96, heightIn: 1350 / 96 },
+	'Instagram Story': { widthIn: 1080 / 96, heightIn: 1920 / 96 },
+
+	/* X / Twitter */
+	'X Profile': { widthIn: 400 / 96, heightIn: 400 / 96 },
+	'X Header': { widthIn: 1500 / 96, heightIn: 500 / 96 },
+
+	/* LinkedIn */
+	'LinkedIn Profile': { widthIn: 400 / 96, heightIn: 400 / 96 },
+	'LinkedIn Cover': { widthIn: 1584 / 96, heightIn: 396 / 96 },
+
+	/* TikTok */
+	'TikTok Profile': { widthIn: 200 / 96, heightIn: 200 / 96 },
+	'TikTok Story/Reel': { widthIn: 1080 / 96, heightIn: 1920 / 96 },
+
+	/* Pinterest */
+	'Pinterest Profile': { widthIn: 165 / 96, heightIn: 165 / 96 },
+	'Pinterest Pin': { widthIn: 1000 / 96, heightIn: 1500 / 96 },
+
+	/* YouTube */
+	'YouTube Profile': { widthIn: 800 / 96, heightIn: 800 / 96 },
+	'YouTube Banner': { widthIn: 2560 / 96, heightIn: 1440 / 96 },
+	'YouTube Thumbnail': { widthIn: 1280 / 96, heightIn: 720 / 96 }
+};
 
 	$presetSelect.on('change', setPreset);
 
@@ -116,8 +134,45 @@ $(function () {
 		setPreset();
 	}
 
+	/* --- Mobile preset sizing --- */
+	function setPresetMobile() {
+		const presetVal = $presetSelect.val();
+		const preset = presets[presetVal];
+		if (!cropBox || !image || presetVal === 'Custom') return;
+
+		const imgRatio = image.naturalWidth / image.naturalHeight;
+		let displayWidth = $preview.width();
+		let displayHeight = displayWidth / imgRatio;
+		if (displayHeight > $preview.height()) {
+			displayHeight = $preview.height();
+			displayWidth = displayHeight * imgRatio;
+		}
+		image.style.width = displayWidth + 'px';
+		image.style.height = displayHeight + 'px';
+		image.style.left = ($preview.width() - displayWidth) / 2 + 'px';
+		image.style.top = ($preview.height() - displayHeight) / 2 + 'px';
+
+		previewScale = displayWidth / image.naturalWidth;
+
+		const presetWidthPx = preset.widthIn * screenDPI;
+		const presetHeightPx = preset.heightIn * screenDPI;
+		const scale = Math.min($preview.width() / presetWidthPx, $preview.height() / presetHeightPx);
+
+		cropBox.style.width = presetWidthPx * scale + 'px';
+		cropBox.style.height = presetHeightPx * scale + 'px';
+		cropBox.style.left = ($preview.width() - presetWidthPx * scale) / 2 + 'px';
+		cropBox.style.top = ($preview.height() - presetHeightPx * scale) / 2 + 'px';
+
+		updateOverlay();
+	}
+
 	/* --- Set preset --- */
 	function setPreset() {
+		if (isMobile() && $presetSelect.val() !== 'Custom') {
+			setPresetMobile();
+			return;
+		}
+
 		const presetVal = $presetSelect.val();
 		const preset = presets[presetVal];
 
@@ -138,27 +193,13 @@ $(function () {
 		previewScale = displayWidth / image.naturalWidth;
 
 		if (presetVal === 'Custom') {
-			const size = Math.min($preview.width(), $preview.height()) * 0.4;
-			cropBox.style.width = size + 'px';
-			cropBox.style.height = size + 'px';
-			cropBox.style.left = ($preview.width() - size) / 2 + 'px';
-			cropBox.style.top = ($preview.height() - size) / 2 + 'px';
+			cropBox.style.width = '100px';
+			cropBox.style.height = '100px';
+			cropBox.style.left = ($preview.width() - 100) / 2 + 'px';
+			cropBox.style.top = ($preview.height() - 100) / 2 + 'px';
 		} else {
-			let targetWidthPx = preset.widthIn * screenDPI;
-			let targetHeightPx = preset.heightIn * screenDPI;
-
-			// Make sure it fits nicely on mobile
-			const maxWidth = $preview.width() * 0.8;
-			const maxHeight = $preview.height() * 0.8;
-			if (targetWidthPx > maxWidth) {
-				targetHeightPx *= maxWidth / targetWidthPx;
-				targetWidthPx = maxWidth;
-			}
-			if (targetHeightPx > maxHeight) {
-				targetWidthPx *= maxHeight / targetHeightPx;
-				targetHeightPx = maxHeight;
-			}
-
+			const targetWidthPx = preset.widthIn * screenDPI;
+			const targetHeightPx = preset.heightIn * screenDPI;
 			cropBox.style.width = targetWidthPx * previewScale + 'px';
 			cropBox.style.height = targetHeightPx * previewScale + 'px';
 			cropBox.style.left = ($preview.width() - targetWidthPx * previewScale) / 2 + 'px';
@@ -168,7 +209,7 @@ $(function () {
 		updateOverlay();
 	}
 
-	/* --- Draggable crop box (desktop & touch) --- */
+	/* --- Draggable crop box --- */
 	function makeDraggable(element) {
 		let offsetX = 0, offsetY = 0, dragging = false;
 
@@ -190,15 +231,25 @@ $(function () {
 			updateOverlay();
 		}
 
-		element.addEventListener('mousedown', e => { if (e.target !== cropHandle) { startDrag(e.clientX, e.clientY); e.preventDefault(); } });
-		element.addEventListener('touchstart', e => { if (e.target !== cropHandle) { const t = e.touches[0]; startDrag(t.clientX, t.clientY); e.preventDefault(); } });
+		element.addEventListener('mousedown', e => {
+			if (e.target === cropHandle) return;
+			startDrag(e.clientX, e.clientY);
+			e.preventDefault();
+		});
+		element.addEventListener('touchstart', e => {
+			if (e.target === cropHandle) return;
+			const t = e.touches[0];
+			startDrag(t.clientX, t.clientY);
+			e.preventDefault();
+		});
+
 		document.addEventListener('mousemove', e => drag(e.clientX, e.clientY));
 		document.addEventListener('touchmove', e => drag(e.touches[0].clientX, e.touches[0].clientY));
 		document.addEventListener('mouseup', () => dragging = false);
 		document.addEventListener('touchend', () => dragging = false);
 	}
 
-	/* --- Resizable crop box (desktop & touch) --- */
+	/* --- Resizable crop box --- */
 	function makeResizable(element, handle) {
 		let startX = 0, startY = 0, startW = 0, startH = 0, resizing = false;
 
@@ -232,8 +283,18 @@ $(function () {
 			if ($presetSelect.val() !== 'Custom') $presetSelect.val('Custom');
 		}
 
-		handle.addEventListener('mousedown', e => { startResize(e.clientX, e.clientY); e.preventDefault(); e.stopPropagation(); });
-		handle.addEventListener('touchstart', e => { const t = e.touches[0]; startResize(t.clientX, t.clientY); e.preventDefault(); e.stopPropagation(); });
+		handle.addEventListener('mousedown', e => {
+			startResize(e.clientX, e.clientY);
+			e.preventDefault();
+			e.stopPropagation();
+		});
+		handle.addEventListener('touchstart', e => {
+			const t = e.touches[0];
+			startResize(t.clientX, t.clientY);
+			e.preventDefault();
+			e.stopPropagation();
+		});
+
 		document.addEventListener('mousemove', e => resize(e.clientX, e.clientY));
 		document.addEventListener('touchmove', e => resize(e.touches[0].clientX, e.touches[0].clientY));
 		document.addEventListener('mouseup', () => resizing = false);
