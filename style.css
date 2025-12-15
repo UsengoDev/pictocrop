@@ -150,6 +150,11 @@ h1 { margin: 0 0 8px; font-size: 26px; }
     flex-direction:row;
     justify-content: center;
     align-items:center;
+    font-weight: 700;
+}
+.our_other_tools a{
+    text-decoration:none;
+    color:black;
 }
 .online_tool_container{
     text-align:center;
@@ -159,4 +164,8 @@ h1 { margin: 0 0 8px; font-size: 26px; }
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: 32px;
+}
+.tool_description{
+    font-weight:normal;
 }
