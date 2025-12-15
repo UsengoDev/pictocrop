@@ -10,22 +10,22 @@
 </head>
 <body>
     <div id="header">
-            <a href="/" class="logo_container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-                  <!-- Transparent background -->
-                  <rect width="64" height="64" fill="none"/>
+        <a href="/" class="logo_container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+              <!-- Transparent background -->
+              <rect width="64" height="64" fill="none"/>
 
-                  <!-- Staggered rectangles -->
-                  <rect x="12" y="14" width="40" height="36" rx="4" ry="4" fill="#4A7CFF"/>
-                  <rect x="16" y="10" width="32" height="36" rx="4" ry="4" fill="#6FA3FF"/>
-                  <rect x="20" y="6" width="24" height="36" rx="4" ry="4" fill="#91C0FF"/>
+              <!-- Staggered rectangles -->
+              <rect x="12" y="14" width="40" height="36" rx="4" ry="4" fill="#4A7CFF"/>
+              <rect x="16" y="10" width="32" height="36" rx="4" ry="4" fill="#6FA3FF"/>
+              <rect x="20" y="6" width="24" height="36" rx="4" ry="4" fill="#91C0FF"/>
 
-                  <!-- Letter P inside top rectangle -->
-                  <text x="32" y="30" font-size="20" font-family="Arial, sans-serif" font-weight="bold" fill="#fff" text-anchor="middle">P</text>
-                </svg>
-                <div class="logo_text_container">Photiny</div>
-            </a>
-        </div>
+              <!-- Letter P inside top rectangle -->
+              <text x="32" y="30" font-size="20" font-family="Arial, sans-serif" font-weight="bold" fill="#fff" text-anchor="middle">P</text>
+            </svg>
+            <div class="logo_text_container">Pictocrop</div>
+        </a>
+    </div>
 	<div class="container">
 		<h1>Image Dimension & DPI Fixer</h1>
 		<p class="subtitle">Crop and resize your image using presets or manual selection. One image at a time.</p>
@@ -41,52 +41,52 @@
 
 		<div class="controls">
 			<label for="presetSelect">Presets:</label>
-<select id="presetSelect">
-	<option value="Custom">Custom</option>
+            <select id="presetSelect">
+                <option value="Custom">Custom</option>
 
-	<optgroup label="Physical Photos">
-		<option value="Passport">Passport (2x2 inches)</option>
-		<option value="Visa">Visa Photo (35x45 mm)</option>
-	</optgroup>
+                <optgroup label="Physical Photos">
+                    <option value="Passport">Passport (2x2 inches)</option>
+                    <option value="Visa">Visa Photo (35x45 mm)</option>
+                </optgroup>
 
-	<optgroup label="Facebook">
-		<option value="Facebook Profile">Profile Picture</option>
-		<option value="Facebook Cover">Cover Photo</option>
-	</optgroup>
+                <optgroup label="Facebook">
+                    <option value="Facebook Profile">Profile Picture</option>
+                    <option value="Facebook Cover">Cover Photo</option>
+                </optgroup>
 
-	<optgroup label="Instagram">
-		<option value="Instagram Profile">Profile Picture</option>
-		<option value="Instagram Post Square">Post (Square)</option>
-		<option value="Instagram Post Portrait">Post (Portrait)</option>
-		<option value="Instagram Story">Story / Reel</option>
-	</optgroup>
+                <optgroup label="Instagram">
+                    <option value="Instagram Profile">Profile Picture</option>
+                    <option value="Instagram Post Square">Post (Square)</option>
+                    <option value="Instagram Post Portrait">Post (Portrait)</option>
+                    <option value="Instagram Story">Story / Reel</option>
+                </optgroup>
 
-	<optgroup label="X / Twitter">
-		<option value="X Profile">Profile Picture</option>
-		<option value="X Header">Header / Cover</option>
-	</optgroup>
+                <optgroup label="X / Twitter">
+                    <option value="X Profile">Profile Picture</option>
+                    <option value="X Header">Header / Cover</option>
+                </optgroup>
 
-	<optgroup label="LinkedIn">
-		<option value="LinkedIn Profile">Profile Picture</option>
-		<option value="LinkedIn Cover">Cover Photo</option>
-	</optgroup>
+                <optgroup label="LinkedIn">
+                    <option value="LinkedIn Profile">Profile Picture</option>
+                    <option value="LinkedIn Cover">Cover Photo</option>
+                </optgroup>
 
-	<optgroup label="TikTok">
-		<option value="TikTok Profile">Profile Picture</option>
-		<option value="TikTok Story/Reel">Story / Reel</option>
-	</optgroup>
+                <optgroup label="TikTok">
+                    <option value="TikTok Profile">Profile Picture</option>
+                    <option value="TikTok Story/Reel">Story / Reel</option>
+                </optgroup>
 
-	<optgroup label="Pinterest">
-		<option value="Pinterest Profile">Profile Picture</option>
-		<option value="Pinterest Pin">Pin</option>
-	</optgroup>
+                <optgroup label="Pinterest">
+                    <option value="Pinterest Profile">Profile Picture</option>
+                    <option value="Pinterest Pin">Pin</option>
+                </optgroup>
 
-	<optgroup label="YouTube">
-		<option value="YouTube Profile">Profile Picture</option>
-		<option value="YouTube Banner">Banner</option>
-		<option value="YouTube Thumbnail">Thumbnail</option>
-	</optgroup>
-</select>
+                <optgroup label="YouTube">
+                    <option value="YouTube Profile">Profile Picture</option>
+                    <option value="YouTube Banner">Banner</option>
+                    <option value="YouTube Thumbnail">Thumbnail</option>
+                </optgroup>
+            </select>
 
 			<button id="processBtn">Download Cropped</button>
 		</div>
