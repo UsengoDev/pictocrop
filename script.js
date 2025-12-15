@@ -66,7 +66,7 @@ $(function () {
 		reader.readAsDataURL(file);
 	}
 
-	/* --- Presets (Passport, Visa, Social Media) --- */
+	/* --- Presets --- */
 	const presets = {
 	/* Physical Photos */
 	'Passport': { widthIn: 2, heightIn: 2 },
@@ -103,7 +103,6 @@ $(function () {
 	'YouTube Banner': { widthIn: 2560 / 96, heightIn: 1440 / 96 },
 	'YouTube Thumbnail': { widthIn: 1280 / 96, heightIn: 720 / 96 }
 };
-
 
 	$presetSelect.on('change', setPreset);
 
@@ -171,43 +170,59 @@ $(function () {
 	/* --- Draggable crop box --- */
 	function makeDraggable(element) {
 		let offsetX = 0, offsetY = 0, dragging = false;
-		element.addEventListener('mousedown', e => {
-			if (e.target === cropHandle) return;
+
+		function startDrag(clientX, clientY) {
 			dragging = true;
 			const rect = element.getBoundingClientRect();
-			offsetX = e.clientX - rect.left;
-			offsetY = e.clientY - rect.top;
-			e.preventDefault();
-		});
-		document.addEventListener('mousemove', e => {
+			offsetX = clientX - rect.left;
+			offsetY = clientY - rect.top;
+		}
+
+		function drag(clientX, clientY) {
 			if (!dragging) return;
-			let x = e.clientX - $preview[0].getBoundingClientRect().left - offsetX;
-			let y = e.clientY - $preview[0].getBoundingClientRect().top - offsetY;
+			let x = clientX - $preview[0].getBoundingClientRect().left - offsetX;
+			let y = clientY - $preview[0].getBoundingClientRect().top - offsetY;
 			x = Math.max(0, Math.min(x, $preview.width() - element.offsetWidth));
 			y = Math.max(0, Math.min(y, $preview.height() - element.offsetHeight));
 			element.style.left = x + 'px';
 			element.style.top = y + 'px';
 			updateOverlay();
+		}
+
+		element.addEventListener('mousedown', e => {
+			if (e.target === cropHandle) return;
+			startDrag(e.clientX, e.clientY);
+			e.preventDefault();
 		});
+		element.addEventListener('touchstart', e => {
+			if (e.target === cropHandle) return;
+			const t = e.touches[0];
+			startDrag(t.clientX, t.clientY);
+			e.preventDefault();
+		});
+
+		document.addEventListener('mousemove', e => drag(e.clientX, e.clientY));
+		document.addEventListener('touchmove', e => drag(e.touches[0].clientX, e.touches[0].clientY));
 		document.addEventListener('mouseup', () => dragging = false);
+		document.addEventListener('touchend', () => dragging = false);
 	}
 
 	/* --- Resizable crop box --- */
 	function makeResizable(element, handle) {
 		let startX = 0, startY = 0, startW = 0, startH = 0, resizing = false;
-		handle.addEventListener('mousedown', e => {
+
+		function startResize(clientX, clientY) {
 			resizing = true;
-			startX = e.clientX;
-			startY = e.clientY;
+			startX = clientX;
+			startY = clientY;
 			startW = element.offsetWidth;
 			startH = element.offsetHeight;
-			e.preventDefault();
-			e.stopPropagation();
-		});
-		document.addEventListener('mousemove', e => {
+		}
+
+		function resize(clientX, clientY) {
 			if (!resizing) return;
-			let newW = startW + (e.clientX - startX);
-			let newH = startH + (e.clientY - startY);
+			let newW = startW + (clientX - startX);
+			let newH = startH + (clientY - startY);
 			newW = Math.max(20, Math.min(newW, $preview.width() - element.offsetLeft));
 			newH = Math.max(20, Math.min(newH, $preview.height() - element.offsetTop));
 
@@ -224,8 +239,24 @@ $(function () {
 			updateOverlay();
 
 			if ($presetSelect.val() !== 'Custom') $presetSelect.val('Custom');
+		}
+
+		handle.addEventListener('mousedown', e => {
+			startResize(e.clientX, e.clientY);
+			e.preventDefault();
+			e.stopPropagation();
 		});
+		handle.addEventListener('touchstart', e => {
+			const t = e.touches[0];
+			startResize(t.clientX, t.clientY);
+			e.preventDefault();
+			e.stopPropagation();
+		});
+
+		document.addEventListener('mousemove', e => resize(e.clientX, e.clientY));
+		document.addEventListener('touchmove', e => resize(e.touches[0].clientX, e.touches[0].clientY));
 		document.addEventListener('mouseup', () => resizing = false);
+		document.addEventListener('touchend', () => resizing = false);
 	}
 
 	/* --- Overlay --- */

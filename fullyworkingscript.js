@@ -12,7 +12,7 @@ $(function () {
 	let cropHandle = null;
 
 	let overlayTop, overlayLeft, overlayRight, overlayBottom;
-	let previewScale = 1; // zoom factor for the preview image
+	let previewScale = 1;
 
 	/* --- Detect monitor DPI --- */
 	function getScreenDPI() {
@@ -35,14 +35,14 @@ $(function () {
 	$dropzone.on('dragleave', () => $dropzone.removeClass('dragover'));
 	$dropzone.on('drop', e => { e.preventDefault(); $dropzone.removeClass('dragover'); handleFile(e.originalEvent.dataTransfer.files[0]); });
 
-	/* --- Clipboard paste (for screenshots) --- */
+	/* --- Clipboard paste --- */
 	$(window).on('paste', function(e) {
 		const items = e.originalEvent.clipboardData.items;
 		for (let i = 0; i < items.length; i++) {
 			const item = items[i];
 			if (item.type.startsWith('image/')) {
 				const file = item.getAsFile();
-				handleFile(file); 
+				handleFile(file);
 				if ($presetSelect.val() !== 'Custom') $presetSelect.val('Custom');
 				break;
 			}
@@ -66,28 +66,45 @@ $(function () {
 		reader.readAsDataURL(file);
 	}
 
-	/* --- Presets grouped by platform --- */
+	/* --- Presets (Passport, Visa, Social Media) --- */
 	const presets = {
-		'Passport': { widthIn: 2, heightIn: 2 },
-		'Visa': { widthIn: 35 / 25.4, heightIn: 45 / 25.4 },
-		'Facebook Profile': { widthIn: 1, heightIn: 1 },
-		'Facebook Cover': { widthIn: 820 / 300, heightIn: 312 / 300 }, // web pixels / 300 DPI
-		'Instagram Profile': { widthIn: 1, heightIn: 1 },
-		'Instagram Post Square': { widthIn: 1, heightIn: 1 },
-		'Instagram Post Portrait': { widthIn: 1080 / 300, heightIn: 1350 / 300 },
-		'Instagram Story': { widthIn: 1080 / 300, heightIn: 1920 / 300 },
-		'X Profile': { widthIn: 1, heightIn: 1 },
-		'X Header': { widthIn: 1500 / 300, heightIn: 500 / 300 },
-		'LinkedIn Profile': { widthIn: 1, heightIn: 1 },
-		'LinkedIn Cover': { widthIn: 1584 / 300, heightIn: 396 / 300 },
-		'TikTok Profile': { widthIn: 1, heightIn: 1 },
-		'TikTok Story/Reel': { widthIn: 1080 / 300, heightIn: 1920 / 300 },
-		'Pinterest Profile': { widthIn: 1, heightIn: 1 },
-		'Pinterest Pin': { widthIn: 1000 / 300, heightIn: 1500 / 300 },
-		'YouTube Profile': { widthIn: 1, heightIn: 1 },
-		'YouTube Banner': { widthIn: 2560 / 300, heightIn: 1440 / 300 },
-		'YouTube Thumbnail': { widthIn: 1280 / 300, heightIn: 720 / 300 }
-	};
+	/* Physical Photos */
+	'Passport': { widthIn: 2, heightIn: 2 },
+	'Visa': { widthIn: 35 / 25.4, heightIn: 45 / 25.4 },
+
+	/* Facebook */
+	'Facebook Profile': { widthIn: 320 / 96, heightIn: 320 / 96 },
+	'Facebook Cover': { widthIn: 820 / 96, heightIn: 312 / 96 },
+
+	/* Instagram */
+	'Instagram Profile': { widthIn: 320 / 96, heightIn: 320 / 96 },
+	'Instagram Post Square': { widthIn: 1080 / 96, heightIn: 1080 / 96 },
+	'Instagram Post Portrait': { widthIn: 1080 / 96, heightIn: 1350 / 96 },
+	'Instagram Story': { widthIn: 1080 / 96, heightIn: 1920 / 96 },
+
+	/* X / Twitter */
+	'X Profile': { widthIn: 400 / 96, heightIn: 400 / 96 },
+	'X Header': { widthIn: 1500 / 96, heightIn: 500 / 96 },
+
+	/* LinkedIn */
+	'LinkedIn Profile': { widthIn: 400 / 96, heightIn: 400 / 96 },
+	'LinkedIn Cover': { widthIn: 1584 / 96, heightIn: 396 / 96 },
+
+	/* TikTok */
+	'TikTok Profile': { widthIn: 200 / 96, heightIn: 200 / 96 },
+	'TikTok Story/Reel': { widthIn: 1080 / 96, heightIn: 1920 / 96 },
+
+	/* Pinterest */
+	'Pinterest Profile': { widthIn: 165 / 96, heightIn: 165 / 96 },
+	'Pinterest Pin': { widthIn: 1000 / 96, heightIn: 1500 / 96 },
+
+	/* YouTube */
+	'YouTube Profile': { widthIn: 800 / 96, heightIn: 800 / 96 },
+	'YouTube Banner': { widthIn: 2560 / 96, heightIn: 1440 / 96 },
+	'YouTube Thumbnail': { widthIn: 1280 / 96, heightIn: 720 / 96 }
+};
+
+
 	$presetSelect.on('change', setPreset);
 
 	/* --- Crop box setup --- */
@@ -113,18 +130,13 @@ $(function () {
 		setPreset();
 	}
 
-	/* --- Set preset & enforce aspect ratio --- */
+	/* --- Set preset --- */
 	function setPreset() {
-		const preset = presets[$presetSelect.val()];
+		const presetVal = $presetSelect.val();
+		const preset = presets[presetVal];
+
 		if (!cropBox || !image) return;
 
-		let targetWidthPx = preset.widthIn * screenDPI;
-		let targetHeightPx = preset.heightIn * screenDPI;
-
-		// Maintain aspect ratio
-		const aspectRatio = targetWidthPx / targetHeightPx;
-
-		// scale image to fit preview
 		const imgRatio = image.naturalWidth / image.naturalHeight;
 		let displayWidth = $preview.width();
 		let displayHeight = displayWidth / imgRatio;
@@ -139,18 +151,19 @@ $(function () {
 
 		previewScale = displayWidth / image.naturalWidth;
 
-		// enforce aspect ratio for crop box
-		let cropWidth = targetWidthPx * previewScale;
-		let cropHeight = targetHeightPx * previewScale;
-
-		const currentRatio = cropWidth / cropHeight;
-		if (currentRatio > aspectRatio) cropWidth = cropHeight * aspectRatio;
-		else cropHeight = cropWidth / aspectRatio;
-
-		cropBox.style.width = cropWidth + 'px';
-		cropBox.style.height = cropHeight + 'px';
-		cropBox.style.left = ($preview.width() - cropWidth) / 2 + 'px';
-		cropBox.style.top = ($preview.height() - cropHeight) / 2 + 'px';
+		if (presetVal === 'Custom') {
+			cropBox.style.width = '100px';
+			cropBox.style.height = '100px';
+			cropBox.style.left = ($preview.width() - 100) / 2 + 'px';
+			cropBox.style.top = ($preview.height() - 100) / 2 + 'px';
+		} else {
+			const targetWidthPx = preset.widthIn * screenDPI;
+			const targetHeightPx = preset.heightIn * screenDPI;
+			cropBox.style.width = targetWidthPx * previewScale + 'px';
+			cropBox.style.height = targetHeightPx * previewScale + 'px';
+			cropBox.style.left = ($preview.width() - targetWidthPx * previewScale) / 2 + 'px';
+			cropBox.style.top = ($preview.height() - targetHeightPx * previewScale) / 2 + 'px';
+		}
 
 		updateOverlay();
 	}
@@ -195,16 +208,17 @@ $(function () {
 			if (!resizing) return;
 			let newW = startW + (e.clientX - startX);
 			let newH = startH + (e.clientY - startY);
-			// enforce aspect ratio
-			const preset = presets[$presetSelect.val()];
-			if (preset && $presetSelect.val() !== 'Custom') {
-				const aspectRatio = (preset.widthIn * screenDPI) / (preset.heightIn * screenDPI);
-				if (newW / newH > aspectRatio) newW = newH * aspectRatio;
-				else newH = newW / aspectRatio;
-			}
-
 			newW = Math.max(20, Math.min(newW, $preview.width() - element.offsetLeft));
 			newH = Math.max(20, Math.min(newH, $preview.height() - element.offsetTop));
+
+			if ($presetSelect.val() !== 'Custom') {
+				const preset = presets[$presetSelect.val()];
+				const aspect = (preset.heightIn * screenDPI) / (preset.widthIn * screenDPI);
+				newH = newW * aspect;
+				if (element.offsetTop + newH > $preview.height()) newH = $preview.height() - element.offsetTop;
+				newW = newH / aspect;
+			}
+
 			element.style.width = newW + 'px';
 			element.style.height = newH + 'px';
 			updateOverlay();
