@@ -156,7 +156,8 @@ h1 { margin: 0 0 8px; font-size: 26px; }
 .our_other_tools a{
     text-decoration:none;
     color:black;
-    padding: 24px;
+    padding: 24px 8px;
+    min-width: 150px;
     max-width: 45vw;
     overflow: hidden;
     word-wrap: break-word;
