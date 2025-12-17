@@ -198,5 +198,6 @@ h1 { margin: 0 0 8px; font-size: 26px; }
     }
     .usengo_tool_container{
         width:100%;
+        max-width:unset;
     }
 }
