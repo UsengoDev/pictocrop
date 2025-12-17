@@ -196,8 +196,8 @@ h1 { margin: 0 0 8px; font-size: 26px; }
     .other_tools_container{
         flex-direction:column;
     }
-    .usengo_tool_container{
-        width:100%;
-        max-width:unset;
+    .our_other_tools a{
+        width: 100%;
+        max-width: unset;
     }
 }
