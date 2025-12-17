@@ -200,4 +200,8 @@ h1 { margin: 0 0 8px; font-size: 26px; }
         width: 100%;
         max-width: unset;
     }
+    .other_tools_title{
+        text-align: center;
+        line-height: 1.85rem;
+    }
 }
